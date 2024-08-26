@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  Perempuan
+  Pria
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  phone_number String   @unique @db.Char(13)
+  gender       Gender
+  image        String?
+  birth_date   DateTime
+  email        String   @unique
+  password     String
+  full_name    String
+
+  @@map("users")
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  category String
+  image    String
+  Product  Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id           Int      @id @default(autoincrement())
+  product_name String
+  image        String
+  description  String
+  price        Decimal  @db.Decimal(18, 2)
+  Category     Category @relation(fields: [categoryId], references: [id])
+  categoryId   Int
+
+  @@map("products")
+}
+
+// model Sample {
+//   id        Int      @id @default(autoincrement())
+//   name      String
+//   code      String   @unique
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@map("samples") // if you want to use snake_case format
+// }
